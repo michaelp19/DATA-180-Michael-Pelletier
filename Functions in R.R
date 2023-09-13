@@ -40,5 +40,3 @@ mean_median <- function(vector){
   median <- median(vector)
   return(c(mean, median))
 }
-
-mean_median
