@@ -2,8 +2,8 @@
 title: "HW 2: Visualization, Base R"
 subtitle: "Data 180, Professor Kennedy"
 author: 
-  name: "XXXX"
-  email: "XXXX@dickinson.edu"
+  name: "Michael Pelletier"
+  email: "pelletim@dickinson.edu"
 date: '`r format(Sys.Date(), "%B %d, %Y")`' # no need to change date since this line grabs today's date
 output: 
   html_document
@@ -37,11 +37,12 @@ head(Cars93)
 ## Task 1
 a) Create a Frequency table and Relative Frequency table (latter uses percentages) for the variable `Type`. Make sure to round all digits to 3 digits.
 ```{r}
-
+table(Cars93$Type)
+round(table(Cars93$Type) / 93,3)
 ```
 b) Create a frequency bar graph for the variable `Type`. You can have count on the y axis.
 ```{r}
-
+barplot(table(Cars93$Type),col = c("red","green","blue","purple","yellow","white"), ylab = "count", xlab = "size",main = "Car Sizes",cex.axis = 1.2, cex.names = 1.2)
 ```
 
 *	Your axes should be labeled and legible
@@ -51,19 +52,19 @@ b) Create a frequency bar graph for the variable `Type`. You can have count on t
 
 c) Create a pie chart of the variable `Type`.
 ```{r}
-
+pie(table(Cars93$Type), col = c("red","green","blue","purple","yellow","white"), cex = 1.2 ,main = "Car Sizes" )
 ```
 
 * The plot should include a title using the main argument.
 *	The names, labels, and axes sizes (cex parameter) should be set to 1.2
 
 d) What is the mode of the variable `Type`? Comment.
-
+#midsize is the mode of the variable 'Type'.
 
 ## Task 2 
 a) Create a histogram of the variable `Horsepower`.
 ```{r}
-
+hist(Cars93$Horsepower,col = "blue", main = "Car Horsepower", xlab = "Horsepower", ylab = "Frequency", cex = 1.2)
 ```
 
 *	Your axes should be labeled
@@ -73,7 +74,7 @@ a) Create a histogram of the variable `Horsepower`.
 
 b) Create a second histogram with breaks at 25 HP increments instead of 50.
 ```{r}
-
+hist(Cars93$Horsepower,col = "blue", breaks = seq(50,300, 25), main = "Car Horsepower", xlab = "Horsepower", ylab = "Frequency", cex = 1.2)
 ```
 
 * Use the breaks argument to define the classes
@@ -81,33 +82,38 @@ b) Create a second histogram with breaks at 25 HP increments instead of 50.
 
 c) Which histogram more closely follows or rule of thumb for the suggested number of classes? Explain.
 ```{r}
-
+#The number of bars in the histogram should be approximately equal to the square root of the number of observations, so the square root of 93 is about 9.6. There should be about 9.6 bars in the histogram. 
 ```
 
 
 ## Task 3 
 a) What is the type of variable `Passengers`? (Categorical nominal/ordinal or Numerical discrete/continuous?) What happens if we were to make a histogram for `Passengers`? What is the problem with this graph?
 ```{r}
-
+Cars93$Passengers
+#The type of variable 'passengers' is numerical discrete because there are no decimals. The problem with this graph is that a histogram is not useful in this case because the variable 'passengers' is numerical discrete. In this case it doesn't make sense to use a histogram. 
+hist(Cars93$Passengers,col = "blue", main = "Passengers", xlab = "Number of passenger", ylab = "Frequency", cex = 1.2)
 ```
 
 b) Correct the problem in part (a) by creating a more appropriate visualization. Make sure to label your axes, place a title, choose a custom color as in the previous graphs. (Bonus: use factor() with levels option to display x axis values with no observations on the plot.)
 ```{r}
-
+factoredPassengers<-factor(Cars93$Passengers,levels = c(2,3,4,5,6,7,8))
+barplot(table(factoredPassengers), col = c("red","green","blue","purple","yellow","white","green"), ylab = "frequency of passengers", xlab = "number of passengers",main = "Passengers",cex.axis = 1.2, cex.names = 1.2)
 ```
 
 ## Task 4 
 a) Make a histogram of the variable `Length` (the default breaks are fine). Other aspects of the plot should be as in part (a) in Task 2.
 ```{r}
-
+hist(Cars93$Length,col = "blue", main = "Legnth of Cars", xlab = "Car Length", ylab = "Frequency", cex = 1.2)
 ```
 
 b) What is the shape of the distribution?
-
+Bell shaped distribution. 
 
 c) Find the mean and median of the variable `Length.` Do these answers meet your expectations from part (b)?
 ```{r}
-
+mean(Cars93$Length)
+median(Cars93$Length)
+#If it is a bell shaped distribution then mean and median should have similar values. In this case they are close to each other so these answers meet my expectations of what they should be. 
 ```
 
 You are done! 🏁 Don't forget to commit and push your .Rmd file to your Github repository before the due date.
