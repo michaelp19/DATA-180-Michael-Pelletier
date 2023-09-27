@@ -10,7 +10,7 @@ library("MASS")
 #SET WORKING DIRECTORY TO THE FOLDER WHERE THE DATASET IS
 setwd("/Users/michaelpelletier/Desktop/Data 180/DATA-180-Michael-Pelletier")
 
-pdata.read_excel("/Users/michaelpelletier/Desktop/Data 180/DATA-180-Michael-Pelletier") # Always keep in mind file extensions excel = .xlsx or .xls, Comma separated value = .csv
+read_excel("/Users/michaelpelletier/Desktop/Data 180/DATA-180-Michael-Pelletier") # Always keep in mind file extensions excel = .xlsx or .xls, Comma separated value = .csv
 
 #2.
 # READ DIRECTLY FROM THE FOLDER
