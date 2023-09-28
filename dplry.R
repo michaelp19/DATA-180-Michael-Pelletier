@@ -26,17 +26,17 @@ head(Cars93_Ex4)
 
 Cars93_Ex7<-select(filter(Cars93, Type %in% c("Sporty","Compact") & Horsepower >=120),Model,Type,EngineSize,Cylinders,Horsepower,MPG.highway)
 
-Cars93_Ex7<-select(filter(Cars93, Type %in% c("Sporty","Compact") & Horsepower >=120),
+Cars93_Ex7<-select(filter(Cars93, Type %in% c("Van","Small") & Horsepower >=120),
             Model,Type,EngineSize,Cylinders,Horsepower,MPG.highway)
 head(Cars93_Ex7)
 
-# Mutate function.
+# Mutate function(allows you to create a new column in your data which can be useful to see)(Future creation is adding a new column)
 Cars93_Ex9<-select(mutate(Cars93,HPpLiter=Horsepower/EngineSize),Model,Type,EngineSize,Cylinders,Horsepower,MPG.highway,HPpLiter)
+head(Cars93_Ex9)
 
-
-# Equivalent pipeline
+# Equivalent pipeline(basically saves time and makes code more readable %>%)
 Cars93_Ex9<-Cars93 %>%mutate(HPpLiter=Horsepower/EngineSize) %>%select(Model,Type,EngineSize,Cylinders,Horsepower,MPG.highway,HPpLiter)
-
+head(Cars93_Ex9)
 #Using the arrange function to sort your dataframe
 Cars93_Ex10<-arrange(Cars93_Ex9,Cylinders,desc(Horsepower))
 head(Cars93_Ex10)
