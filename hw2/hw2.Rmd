@@ -8,6 +8,7 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`' # no need to change date since this 
 output: 
   html_document
 ---
+19/20. Good job Mike.
 
 Make sure that you have accepted the hw invitation link, and working with your clone repository.
 
@@ -83,6 +84,8 @@ hist(Cars93$Horsepower,col = "blue", breaks = seq(50,300, 25), main = "Car Horse
 c) Which histogram more closely follows or rule of thumb for the suggested number of classes? Explain.
 ```{r}
 #The number of bars in the histogram should be approximately equal to the square root of the number of observations, so the square root of 93 is about 9.6. There should be about 9.6 bars in the histogram. 
+
+# Which of the histograms you have plotted closely follow this rule? (-1)
 ```
 
 
