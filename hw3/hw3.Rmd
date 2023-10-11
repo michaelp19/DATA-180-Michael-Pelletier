@@ -294,6 +294,8 @@ Lastly, let's display the same map using `mapview()`. Load the `mapview` package
 ```{r}
 #install.packages('mapview') # interactive display
 library(mapview)
+
+
 ```
 Create an interactive map of Australia using `mapview()`
 
