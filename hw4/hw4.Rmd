@@ -2,8 +2,8 @@
 title: "HW 4: Dplyr"
 subtitle: "Data 180, Professor Kennedy"
 author: 
-  name: "Your Name"
-  email: "XXXX@dickinson.edu"
+  name: "Michael Pelletier"
+  email: "pelletim@dickinson.edu"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document
@@ -43,17 +43,34 @@ For the entire data, display the summary statistics (mean, median, mode, etc.) u
 
 ```{r}
 
+summary(records)
+
 ```
 # Question 2
 Return the count of cases where a record was broken in more than a year (365 days).
 
 ```{r}
+#office hours 3-4 on wednesday. 1 or 2333?
+result <- records %>%
+  arrange(record_duration) %>%
+  mutate(date = c(0, diff(record_duration))) %>%
+  summarise(count = n())
+
+print(result)
 
 ```
 # Question 3
 Return name of the player, name of the track, record date, and record duration for the record that took the longest time to be broken.
 
 ```{r}
+#office hours ask for help
+result <- records %>%
+  arrange(record_duration) %>%
+  mutate(date = c(0, diff(record_duration))) %>%
+  filter(record_duration>3030) %>%
+
+  
+print(result)
 
 ```
 
@@ -61,12 +78,27 @@ Return name of the player, name of the track, record date, and record duration f
 Return the mean record time (`time`) by each track. What is the name of the track with the fastest average record time? *Hint: you should use `group_by() and summarize()*
 
 ```{r}
+track_means <- records %>%
+  group_by(track) %>%
+  summarize(mean_time = mean(time))
+
+
+fastest_track <- track_means %>%
+  filter(mean_time == min(mean_time))
+
+
+
+cat("The track with the fastest average record time is:", fastest_track$track)
 
 ```
 # Question 5
 Let's get the year from the `date` column and save it as a variable named `year`. You can use the function `substr(date, 1, 4)` which grabs the first 4 digits in the `date` column. Use this expression in `mutate()` to create a `year` column. (Don't forget to save/overwrite the dataframe returned to the original one!)
 
 ```{r}
+years <- records %>%
+  mutate(year = as.integer(substr(date, 1, 4)))
+
+head(years)
 
 ```
 
@@ -74,12 +106,24 @@ Let's get the year from the `date` column and save it as a variable named `year`
 Now get the average record time (`time`) by year.
 
 ```{r}
+average_time_by_year <- records %>%
+  group_by(year) %>%
+  summarize(avg_time = mean(time))%>% 
+
+print(average_time_by_year)
 
 ```
 # Question 7
 Continuing with your results in Question 6: Do you notice a trend across years? Are the record times getting faster, slower, or no clear pattern in time? Create a barplot where each year appears on the x axis (you can treat year as a categorical variable in this case) and y axis showing the mean record time in each year. Interpret your graph. *Hint: Use your code in Question 6, which returns the average record times by year, followed by ` %>% ggplot(aes(year,mean)) + geom_bar(stat='identity')` Hint2: To make your figure wider, you can insert fig.width=10 inside the curly brackets at the beginning of your r code chunk below, as {r, fig.width=10} which I already did for you below,*
 
 ```{r, fig.width=10}
+library(ggplot2)
+average_time_by_year <- records %>%
+  group_by(year) %>%
+  summarize(avg_time = mean(time))
+
+ggplot(average_time_by_year, aes(year, avg_time)) +
+  geom_bar(stat = 'identity')
 
 ```
 
@@ -89,6 +133,15 @@ Create two overlaid histograms by `type` on the same plot where each histogram s
 Note: Set `alpha=.5` for transparency.
 
 ```{r}
+library(ggplot2)
+
+records %>%
+  ggplot(aes(time, fill = type)) +
+  geom_histogram(alpha = 0.5, position = 'identity', bins = 30) +
+  facet_wrap(~ type, scales = 'free') +
+  labs(title = "Comparison of Record Times by Track Type",
+       x = "Time",
+       y = "Frequency")
 
 ```
 
@@ -97,11 +150,33 @@ Three Lap time reports the total time spent finishing three laps in total, as op
 
 ```{r}
 
+records <- records %>%
+  mutate(time_per = ifelse(type == "Three Lap", time / 3, time))
+
+ggplot(records, aes(time_per, fill = type)) +
+  geom_histogram(alpha = 0.5, position = 'identity', bins = 30) +
+  facet_wrap(~type, scales = 'free') +
+  labs(title = "Comparison of Time per Lap by Track Type",
+       x = "Time per Lap",
+       y = "Frequency")
+
 ```
 # Question 10
 There appears to be recent discoveries of shortcuts within some of the tracks causing a number of extraordinarily fast records set in `Three Lap` tracks (Have you noticed this in your graph in Question 9?). Replicate your histogram in Question 9 with `shortcut=="No"` filter.
 
 ```{r}
+records <- records %>%
+  mutate(time_per = ifelse(type == "Three Lap", time / 3, time)) %>%
+  filter(shortcut == "No")
+
+
+ggplot(records, aes(time_per, fill = type)) +
+  geom_histogram(alpha = 0.5, position = 'identity', bins = 30) +
+  facet_wrap(~type, scales = 'free') +
+  labs(title = "Comparison of Time per Lap by Track Type (No Shortcuts)",
+       x = "Time per Lap",
+       y = "Frequency")
+
 
 ```
 
@@ -109,6 +184,13 @@ There appears to be recent discoveries of shortcuts within some of the tracks ca
 Lastly, compare the mean `time` by `system_played`. Do you observe a difference across the two game systems? (Note: NTSC version of the game runs at 60 FPS (Frames Per Second), and PAL runs at 50 FPS!) Does this appear to affect performance of records set?
 
 ```{r}
+
+mean_time_by_system <- records %>%
+  group_by(system_played) %>%
+  summarize(mean_time = mean(time))
+
+
+print(mean_time_by_system)
 
 ```
 
