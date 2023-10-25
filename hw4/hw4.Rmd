@@ -50,27 +50,26 @@ summary(records)
 Return the count of cases where a record was broken in more than a year (365 days).
 
 ```{r}
-#office hours 3-4 on wednesday. 1 or 2333?
-result <- records %>%
-  arrange(record_duration) %>%
-  mutate(date = c(0, diff(record_duration))) %>%
-  summarise(count = n())
 
-print(result)
+count_records_broken_more_than_a_year <- records %>%
+  filter(record_duration > 365) %>%
+  nrow()  
+
+
+print(count_records_broken_more_than_a_year)
 
 ```
 # Question 3
 Return name of the player, name of the track, record date, and record duration for the record that took the longest time to be broken.
 
 ```{r}
-#office hours ask for help
-result <- records %>%
-  arrange(record_duration) %>%
-  mutate(date = c(0, diff(record_duration))) %>%
-  filter(record_duration>3030) %>%
 
-  
-print(result)
+longest_duration_record <- records %>%
+  arrange(desc(record_duration)) %>%  
+  slice(1)  
+
+print(longest_duration_record[, c("player", "track", "date", "record_duration")])
+
 
 ```
 
