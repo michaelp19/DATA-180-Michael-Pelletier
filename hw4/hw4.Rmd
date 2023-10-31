@@ -8,7 +8,7 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document
 ---
-
+15/20. 
 **Due date:** October 26 beginning of class.
 
 Let's get some practice with **dplyr**! For this assignment, you will work with Mario Kart data! This data is made available as part of Tidy Tuesday. A codebook is available at https://github.com/rfordatascience/tidytuesday/tree/master/data/2021/2021-05-25.
@@ -105,12 +105,14 @@ head(years)
 Now get the average record time (`time`) by year.
 
 ```{r}
-average_time_by_year <- records %>%
-  group_by(year) %>%
-  summarize(avg_time = mean(time))%>% 
+# average_time_by_year <- records %>%
+#   group_by(year) %>%
+#   summarize(avg_time = mean(time))%>% 
+# 
+# print(average_time_by_year)
 
-print(average_time_by_year)
-
+# Code breaking. (-2)
+# records %>% group_by(year) %>% summarize(mean=mean(time)) 
 ```
 # Question 7
 Continuing with your results in Question 6: Do you notice a trend across years? Are the record times getting faster, slower, or no clear pattern in time? Create a barplot where each year appears on the x axis (you can treat year as a categorical variable in this case) and y axis showing the mean record time in each year. Interpret your graph. *Hint: Use your code in Question 6, which returns the average record times by year, followed by ` %>% ggplot(aes(year,mean)) + geom_bar(stat='identity')` Hint2: To make your figure wider, you can insert fig.width=10 inside the curly brackets at the beginning of your r code chunk below, as {r, fig.width=10} which I already did for you below,*
@@ -123,6 +125,10 @@ average_time_by_year <- records %>%
 
 ggplot(average_time_by_year, aes(year, avg_time)) +
   geom_bar(stat = 'identity')
+# Code breaking here as well.
+#records %>% group_by(year) %>% summarize(mean=mean(time)) %>% ggplot(aes(year,mean)) + geom_bar(stat='identity')
+
+#Do you notice a trend across years? Are the record times getting faster, slower, or no clear pattern in time?
 
 ```
 
@@ -190,7 +196,7 @@ mean_time_by_system <- records %>%
 
 
 print(mean_time_by_system)
-
+# Do you observe a difference across the two game systems?
 ```
 
 You are done! 🏁 Don't forget to commit and push your .Rmd file to your Github repository before the due date. (Well... the checkered flag emoji is now super relevant for this assignment!)
