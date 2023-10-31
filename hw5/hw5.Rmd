@@ -2,8 +2,8 @@
 title: "HW 5"
 subtitle: "Data 180, Professor Kennedy"
 author: 
-  name: "Your Name"
-  email: "XXXX@dickinson.edu"
+  name: "Michael Pelletier"
+  email: "pelletim@dickinson.edu"
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document
@@ -20,16 +20,24 @@ print(X)
 ```
 
 a) Find the Euclidean distance between the first and second objects. Round the answer to have two decimal points. 
+4.12
+
 
 b) Find the Manhattan distance between the first and third objects. Round the answer to have two decimal points.
-
+17.00
 c) Find the Minkowski distance ($\ro$ = 3) between the second and third objects. Round the answer to have two decimal points.  
-
+14.18
 # Question 2
 a) Use the filter and select commands to choose only vans from the `Cars93` data set. Select the variables (in this order) Model, Price, EngineSize, Horsepower, MPG.highway, and Length. Name this object `Vans93`. Note: Be sure to load the `dplyr` package after loading `MASS` to prevent masking of the select command. How many objects does `Vans93` have? Print the `Vans93` dataframe in your solutions. Note2: If you get any errors with `select()`, try using `dplyr::select()` to avoid conflicts in `dplyr` and `MASS` packages.
 ```{r}
 library(MASS)
 library(dplyr)
+
+Vans93 <- Cars93 %>%
+  filter(Type == "Van") %>%
+  dplyr::select(Model, Price, EngineSize, Horsepower, MPG.highway, Length)
+
+Vans93
 
 
 
@@ -37,14 +45,29 @@ library(dplyr)
 
 b) Use the `dist` and `as.matrix` functions to find the distance matrix for the vans set using the Euclidean metric. Call this matrix `Vans_Euclidean`. You will need to remove the first column of the `Vans93` dataframe when you pass it into the `dist` function, since the variable `Model` is not an appropriate variable for the cluster variate. You can do this by passing in `Vans93[,-1]` or `Vans93[,2:6]` (or any other way you like), converting it to a matrix and storing it as `Vans_Euclidean`. Next, set the row and column names of `Vans_Euclidean` to the Models of the vans using the rownames and colnames functions, so that it is easier for us to see what object we have in each row/column. Hint: This can be done by typing
 
-```
-colnames(Vans_Euclidean)<-Vans93[,1]
-rownames(Vans_Euclidean)<-Vans93[,1]
+```{r}
+# Calculate the Euclidean distance matrix
+Vans_Euclidean <- dist(as.matrix(Vans93[, -1]), method = "euclidean")
+
+# Create a matrix from the distance object
+Vans_Euclidean_matrix <- as.matrix(Vans_Euclidean)
+
+# Set row and column names separately
+rownames(Vans_Euclidean_matrix) <- Vans93$Model
+colnames(Vans_Euclidean_matrix) <- Vans93$Model
+
+# Print the distance matrix
+Vans_Euclidean_matrix
+
 ```
 
 Finally, round the values in this matrix to the hundredths place (two decimal points). Paste the final version of the matrix `Vans_Euclidean` into your solutions. Which two Vans (give the models) have the shortest distance between them? Which two have the largest distance between them?
 ```{r}
+Vans_Euclidean_rounded <- round(Vans_Euclidean_matrix, 2)
 
+Vans_Euclidean_rounded
+#The two vans with the shortest distance:Aerostar and Caravan.
+#The two vans with the shortest distance is Eurovan and Lumina_APV.
 ```
 
 
