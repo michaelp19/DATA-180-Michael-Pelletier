@@ -67,13 +67,21 @@ Vans_Euclidean_rounded <- round(Vans_Euclidean_matrix, 2)
 
 Vans_Euclidean_rounded
 #The two vans with the shortest distance:Aerostar and Caravan.
-#The two vans with the shortest distance is Eurovan and Lumina_APV.
+#The two vans with the shortest distance: Eurovan and Lumina_APV.
 ```
 
 
 
 c) Repeat the steps in part (b) but use the Manhattan metric and call the object `Vans_Manhattan`.
 ```{r}
+Vans_Manhattan_matrix <- dist(as.matrix(Vans93[, 2:6]), method = "manhattan")
+
+Vans_Manhattan_rounded <- round(as.matrix(Vans_Manhattan_matrix), 2)
+
+rownames(Vans_Manhattan_rounded) <- Vans93$Model
+colnames(Vans_Manhattan_rounded) <- Vans93$Model
+
+Vans_Manhattan_rounded
 
 ```
 
@@ -89,14 +97,14 @@ print(D)
 Find (by hand) the inter-group distance between A = $\{O_1, O_4\}$ and B = $\{O_2, O_3, O_5\}$ (where $O_n$ denotes the $n$th object in the distance matrix **D**) using
 
 a) Nearest-neighbor
-
+The nearest neighbor from A to B is between O_1 (from A) and O_2 (from B) with a distance of 1.
 
 
 b) Farthest-neighbor
-
+The farthest neighbor from A to B is between O_4 (from A) and O_3 (from B) with a distance of 9.
 
 c) Average-neighbor
-
+The inter-group distance between A and B using the average-neighbor method is approximately 5.43.
 # Question 4
 Consider the following dendrogram created by a hierarchical clustering of 11 frequently used English words.
 
@@ -111,6 +119,12 @@ Let's practice hierarchical clustering with the `vertebrate` dataset that is sav
 
 a) First, read in the `vertebrate.csv` file and store it in a dataframe object named `vertebrate`. How many rows does the dataframe have? Print the entire dataset in your solutions.
 ```{r}
+library(readr)
+
+vertebrate <- read_csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw5/vertebrate.csv")
+
+num_rows <- nrow(vertebrate)
+print(vertebrate)
 
 ```
 
@@ -118,12 +132,27 @@ b) Perform two separate clustering analyses of the data using the `hclust` funct
 
 (i)	using the Euclidean metric with complete linkage. Note: Similar to Question 2, start by creating a distance matrix named `vertebrate_euclidean` which should not include any text column. Add row and column names to the matrix from the `vertebrate` dataframe. Then apply `dist()` once again before feeding the matrix into `hclust()` function.
 ```{r}
-Ver_Euclidean<-as.matrix(dist(vertebrate[,-1]))
+vertebrate_euclidean <- dist(vertebrate[, -1], method = "euclidean")
+
+rownames(vertebrate) <- vertebrate$Name
+colnames(vertebrate) <- vertebrate$Name
+
+complete_linkage_euclidean <- hclust(vertebrate_euclidean, method = "complete")
+
+plot(complete_linkage_euclidean, main = "Clustered vertebrates,complete linkage dendrogram (Euclidean Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
 
 ```
 
 (ii)using the Manhattan metric with single linkage and
 ```{r}
+vertebrate_manhattan <- dist(vertebrate[, -1], method = "manhattan")
+
+rownames(vertebrate_manhattan) <- vertebrate$Name
+colnames(vertebrate_manhattan) <- vertebrate$Name
+
+single_linkage_manhattan <- hclust(vertebrate_manhattan, method = "single")
+
+plot(single_linkage_manhattan, main = "Clustered vertebrates,Single Linkage Dendrogram (Manhattan Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
 
 ```
 
@@ -143,7 +172,12 @@ In your dendrograms:
 Bonus: (not required) generate the same dendrogram using the `ggdendro` package.
 
 ```{r}
+# Create ggdendro dendrogram for Euclidean metric with complete linkage
+dendro_euclidean <- ggdendro(complete_linkage_euclidean)
 
+# Plot dendrogram with customizations
+plot(dendro_euclidean, lwd = lwd_value,
+     main = title_euclidean, sub = "", xlab = "Vertebrates", cex.lab = 1.25, hang = -1)
 
 ```
 
