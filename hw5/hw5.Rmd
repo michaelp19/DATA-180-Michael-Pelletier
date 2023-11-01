@@ -172,13 +172,6 @@ In your dendrograms:
 Bonus: (not required) generate the same dendrogram using the `ggdendro` package.
 
 ```{r}
-# Create ggdendro dendrogram for Euclidean metric with complete linkage
-dendro_euclidean <- ggdendro(complete_linkage_euclidean)
-
-# Plot dendrogram with customizations
-plot(dendro_euclidean, lwd = lwd_value,
-     main = title_euclidean, sub = "", xlab = "Vertebrates", cex.lab = 1.25, hang = -1)
-
 ```
 
 
