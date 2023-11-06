@@ -1,5 +1,8 @@
 # Using the "apply" function in R. 
 
+
+
+
 Test<- matrix(sample(1:20,12, replace = T), nrow=3, byrow = T)
 Test # This matrix will be different every time you run the line 3. 
 
