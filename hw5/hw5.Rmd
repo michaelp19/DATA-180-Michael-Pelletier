@@ -8,7 +8,8 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document
 ---
-
+13/20
+.
 **Due date:** November 2 beginning of class.
 
 # Question 1
@@ -100,7 +101,12 @@ b) Farthest-neighbor
 The farthest neighbor from A to B is between O_4 (from A) and O_3 (from B) with a distance of 9.
 
 c) Average-neighbor
-The inter-group distance between A and B using the average-neighbor method is approximately 5.43.
+The inter-group distance between A and B using the average-neighbor method is approximately 5.43. (-1)
+# Show by hand (-1)
+= 1/6 (d12 + d13 + d15 + d42 + d43 + d45 )
+= 1/6 (1 + 9 + 1.6 + 6 + 5 + 2)
+= 24.6/6 
+= 4.1
 # Question 4
 Consider the following dendrogram created by a hierarchical clustering of 11 frequently used English words.
 
@@ -117,8 +123,8 @@ a) First, read in the `vertebrate.csv` file and store it in a dataframe object n
 ```{r}
 library(readr)
 
-vertebrate <- read_csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw5/vertebrate.csv")
-
+#vertebrate <- read_csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw5/vertebrate.csv")
+vertebrate <- read.csv ("C:/Users/rodge/Downloads/vertebrate.csv")
 num_rows <- nrow(vertebrate)
 print(vertebrate)
 
@@ -128,32 +134,48 @@ b) Perform two separate clustering analyses of the data using the `hclust` funct
 
 (i)	using the Euclidean metric with complete linkage. Note: Similar to Question 2, start by creating a distance matrix named `vertebrate_euclidean` which should not include any text column. Add row and column names to the matrix from the `vertebrate` dataframe. Then apply `dist()` once again before feeding the matrix into `hclust()` function.
 ```{r}
-vertebrate_euclidean <- dist(vertebrate[, -1], method = "euclidean")
+# vertebrate_euclidean <- dist(vertebrate[, -1], method = "euclidean")
+# 
+# rownames(vertebrate) <- vertebrate$Name
+# colnames(vertebrate) <- vertebrate$Name
+# 
+# complete_linkage_euclidean <- hclust(vertebrate_euclidean, method = "complete")
+# 
+# plot(complete_linkage_euclidean, main = "Clustered vertebrates,complete linkage dendrogram (Euclidean Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
 
-rownames(vertebrate) <- vertebrate$Name
-colnames(vertebrate) <- vertebrate$Name
+#Your code is breaking. 
 
-complete_linkage_euclidean <- hclust(vertebrate_euclidean, method = "complete")
-
-plot(complete_linkage_euclidean, main = "Clustered vertebrates,complete linkage dendrogram (Euclidean Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
+Ver_Euclidean<-as.matrix(dist(vertebrate[,-1]))
+colnames(Ver_Euclidean)<-vertebrate[,1]
+rownames(Ver_Euclidean)<-vertebrate[,1]
+vertebrate_HC_1<-hclust(dist(Ver_Euclidean))
+plot(vertebrate_HC_1,lwd=3,cex.lab=1.25,hang=-1,main="Clustered vertebrates, Euclidean Metric,\n Complete Linkage",xlab="Vertebrates",sub= "")
 
 ```
 
 (ii)using the Manhattan metric with single linkage and
 ```{r}
-vertebrate_manhattan <- dist(vertebrate[, -1], method = "manhattan")
+# vertebrate_manhattan <- dist(vertebrate[, -1], method = "manhattan")
+# 
+# rownames(vertebrate_manhattan) <- vertebrate$Name
+# colnames(vertebrate_manhattan) <- vertebrate$Name
+# 
+# single_linkage_manhattan <- hclust(vertebrate_manhattan, method = "single")
+# 
+# plot(single_linkage_manhattan, main = "Clustered vertebrates,Single Linkage Dendrogram (Manhattan Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
 
-rownames(vertebrate_manhattan) <- vertebrate$Name
-colnames(vertebrate_manhattan) <- vertebrate$Name
+# Your code is breaking again
 
-single_linkage_manhattan <- hclust(vertebrate_manhattan, method = "single")
-
-plot(single_linkage_manhattan, main = "Clustered vertebrates,Single Linkage Dendrogram (Manhattan Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
+Ver_Manhattan<-as.matrix(dist(vertebrate[,-c(1,8)],method="manhattan"))
+colnames(Ver_Manhattan)<-vertebrate[,1]
+rownames(Ver_Manhattan)<-vertebrate[,1]
+vertebrate_HC_2<-hclust(dist(Ver_Manhattan,method="manhattan"),method="single")
+plot(vertebrate_HC_2,lwd=3,cex.lab=1.25,hang=-1,main="Clustered vertebrates, Manhattan Metric,\n Single Linkage",xlab="Vertebrates",sub= "")
 
 ```
 
 Which method do you prefer?
-
+# Not answered. 
 
 In your dendrograms:
 
