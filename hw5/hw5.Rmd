@@ -134,6 +134,7 @@ b) Perform two separate clustering analyses of the data using the `hclust` funct
 
 (i)	using the Euclidean metric with complete linkage. Note: Similar to Question 2, start by creating a distance matrix named `vertebrate_euclidean` which should not include any text column. Add row and column names to the matrix from the `vertebrate` dataframe. Then apply `dist()` once again before feeding the matrix into `hclust()` function.
 ```{r}
+<<<<<<< Updated upstream
 # vertebrate_euclidean <- dist(vertebrate[, -1], method = "euclidean")
 # 
 # rownames(vertebrate) <- vertebrate$Name
@@ -142,6 +143,16 @@ b) Perform two separate clustering analyses of the data using the `hclust` funct
 # complete_linkage_euclidean <- hclust(vertebrate_euclidean, method = "complete")
 # 
 # plot(complete_linkage_euclidean, main = "Clustered vertebrates,complete linkage dendrogram (Euclidean Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
+=======
+#vertebrate_euclidean <- dist(vertebrate[, -1], method = "euclidean")
+# 
+#rownames(vertebrate) <- vertebrate$Name
+#colnames(vertebrate) <- vertebrate$Name
+# 
+#complete_linkage_euclidean <- hclust(vertebrate_euclidean, method = "complete")
+# 
+#plot(complete_linkage_euclidean, main = "Clustered vertebrates,complete linkage dendrogram (Euclidean Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
+>>>>>>> Stashed changes
 
 #Your code is breaking. 
 
