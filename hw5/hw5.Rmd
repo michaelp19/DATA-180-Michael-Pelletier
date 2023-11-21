@@ -8,7 +8,7 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document
 ---
-13/20
+18/20. Mike your code is still breaking. 
 .
 **Due date:** November 2 beginning of class.
 
@@ -121,12 +121,12 @@ Let's practice hierarchical clustering with the `vertebrate` dataset that is sav
 
 a) First, read in the `vertebrate.csv` file and store it in a dataframe object named `vertebrate`. How many rows does the dataframe have? Print the entire dataset in your solutions.
 ```{r}
-library(readr)
+#library(readr)
 
-vertebrate <- read_csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw5/vertebrate.csv")
-num_rows <- nrow(vertebrate)
+vertebrate<-read_csv("C:/Users/rodge/OneDrive/Desktop/DATA_180 Repositories/Pelletier_Mike/DATA-180-Michael-Pelletier/hw5/vertebrate.csv",show_col_types = FALSE)
+num_rows<-nrow(vertebrate)
 print(vertebrate)
-
+ls(vertebrate)
 ```
 
 b) Perform two separate clustering analyses of the data using the `hclust` function. Provide the dendrograms for both clustering methods.
@@ -135,16 +135,15 @@ b) Perform two separate clustering analyses of the data using the `hclust` funct
 ```{r}
 vertebrate_euclidean <- dist(vertebrate[, -1], method = "euclidean")
 
-rownames(vertebrate) <- vertebrate$Name
-colnames(vertebrate) <- vertebrate$Name
-
+# rownames(vertebrate) <- vertebrate$Name
+# colnames(vertebrate) <- vertebrate$Name
 complete_linkage_euclidean <- hclust(vertebrate_euclidean, method = "complete")
 
 plot(complete_linkage_euclidean, main = "Clustered vertebrates,complete linkage dendrogram (Euclidean Metric)", xlab="Vertebrates", cex.lab=1.25, sub = "",lwd=3,hang=-1)
 vertebrate_euclidean <- dist(vertebrate[, -1], method = "euclidean")
 
-rownames(vertebrate) <- vertebrate$Name
-colnames(vertebrate) <- vertebrate$Name
+# rownames(vertebrate) <- vertebrate$Name
+# colnames(vertebrate) <- vertebrate$Name
 
 complete_linkage_euclidean <- hclust(vertebrate_euclidean, method = "complete")
 
@@ -156,8 +155,8 @@ plot(complete_linkage_euclidean, main = "Clustered vertebrates,complete linkage 
 ```{r}
 vertebrate_manhattan <- dist(vertebrate[, -1], method = "manhattan")
 
-rownames(vertebrate_manhattan) <- vertebrate$Name
-colnames(vertebrate_manhattan) <- vertebrate$Name
+#rownames(vertebrate_manhattan) <- vertebrate$Name
+#colnames(vertebrate_manhattan) <- vertebrate$Name
 
 single_linkage_manhattan <- hclust(vertebrate_manhattan, method = "single")
 
