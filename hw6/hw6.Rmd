@@ -8,7 +8,7 @@ date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output: 
   html_document
 ---
-
+18/20. 
 ```{r global options, include = FALSE}
 knitr::opts_chunk$set(warning=FALSE, message=FALSE)
 ```
@@ -180,6 +180,7 @@ elbow_plot <- ggplot(elbow_data, aes(x = K, y = WGSS)) +
   ylab("Within-Group Sum of Squares (WGSS)")
 
 print(elbow_plot)
+#  How many clusters does the elbow plot suggest? How does this compare to your impression from the dendrogram in Question 2?
 
 ```
 
