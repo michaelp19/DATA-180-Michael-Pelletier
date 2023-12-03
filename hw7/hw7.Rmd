@@ -33,14 +33,14 @@ Read the `news.csv` into R and create the object `news` using
 ```{r}
 #library(tidyverse)
 library(tm)
-news<-read.csv("news.csv",header=T)
+news<-read.csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw7/news.csv",header=T)
 ```
 
 Read also the positive and negative word dictionaries, both found on Github. This will later come in handy:
 
 ```{r}
-posWords <- scan("positive-words.txt", character(0), sep = "\n")  # 2006 items
-negWords <- scan("negative-words.txt", character(0), sep = "\n")  # 4783 items
+posWords <- scan("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw7/positive-words.txt", character(0), sep = "\n")  # 2006 items
+negWords <- scan("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw7/negative-words.txt", character(0), sep = "\n")  # 4783 items
 head(posWords,15)
 head(negWords,15)
 ```
@@ -49,18 +49,26 @@ head(negWords,15)
 # Question 1
 First, check how many years of news data we have loaded in in R.
 ```{r}
-
+years <- length(unique(news$year))
+cat(years,"years")
 ```
 
 # Question 2
 Store the headlines column in a vector of text named `charVector`. Print the first 6 entries in the vector.
 ```{r}
+charVector <- as.character(news$headline_text)
+
+print(head(charVector, 6))
 
 ```
 
 # Question 3
 Convert `charVector` into a vector source object named `wordVector` using the function `VectorSource()`. (See class notes on how to do this) Then convert `wordVector` into a corpus object named `wordCorpus` using the function `Corpus()`.
 ```{r}
+wordVector <- VectorSource(charVector)
+
+wordCorpus <- Corpus(wordVector)
+print(wordCorpus)
 
 ```
 
@@ -72,18 +80,43 @@ We are now ready to do some basic trimming on the text. Do the following on the 
 * Remove stopwords (e.g., the, a, at, etc.)
 
 ```{r}
+custom_preprocess <- function(x) {
+  x <- tolower(x)                      
+  x <- removePunctuation(x)            
+  x <- removeNumbers(x)                
+  x <- removeWords(x, stopwords("en")) 
+  return(x)
+}
+
+wordCorpus <- tm_map(wordCorpus, content_transformer(custom_preprocess))
+
+print(as.character(wordCorpus[[1]]))
 
 ```
 
 # Question 5
 What is a term document matrix? Explain. Create a term document matrix from the news vector and store it as an object named `tdm` using the function `TermDocumentMatrix`.
 ```{r}
+#What is a term document matrix? Explain. A term-document matrix is a mathematical representation of a text corpus that reflects the frequency of terms (words or terms).
 
+
+tdm <- TermDocumentMatrix(wordCorpus)
+tdm_matrix <- as.matrix(tdm)
+tdm_df <- as.data.frame(tdm_matrix)
+
+print(tdm_df)
 ```
 
 # Question 6
 Convert `tdm` into a matrix named `m`. Store the frequency of occurrence of each word in the news headlines in an object named `wordCounts`. Return the top 10 most frequent words. (Note: if you run into memory issues creating the matrix `m`, try using one of the computers in Tome.)
 ```{r}
+m <- as.matrix(tdm)
+
+wordCounts <- rowSums(m)
+sorted_wordCounts <- sort(wordCounts, decreasing = TRUE)
+top10_words <- head(sorted_wordCounts, 10)
+
+print(top10_words)
 
 ```
 
@@ -91,6 +124,12 @@ Convert `tdm` into a matrix named `m`. Store the frequency of occurrence of each
 Create a barplot of the words that showed up at least 50 times in the news headlines. Rotate the x axis labels by 90 degrees, and decrease the label font size by 25%.
 
 ```{r}
+freq_words <- wordCounts[wordCounts >= 50]
+
+barplot(freq_words, las = 2, cex.names = 0.75, main = "Words Appearing at Least 50 Times",
+        xlab = "Words", ylab = "Frequency")
+
+par(axis.text.x = list(rot = 90, cex = 0.75))
 
 ```
 
@@ -99,19 +138,54 @@ Create a barplot of the words that showed up at least 50 times in the news headl
 What is the percentage of positive words in the news headlines? What is the percentage of negative words? Make a barplot for each (for positive and negative words that showed up separately) showing the most frequent words for words that showed up at least 20 times. (Note: don't forget to get the total number of unique words that showed up in the data.)
 
 ```{r}
+postdm <- TermDocumentMatrix(wordCorpus, control = list(dictionary = posWords))
+pos_m <- as.matrix(pos_tdm)
 
+neg_tdm <- TermDocumentMatrix(wordCorpus, control = list(dictionary = negWords))
+neg_m <- as.matrix(neg_tdm)
+
+pos_wordCounts <- rowSums(pos_m)
+neg_wordCounts <- rowSums(neg_m)
+
+total_unique_words <- length(unique(unlist(strsplit(as.character(news$headlines), " "))))
+
+pos_percentage <- sum(pos_wordCounts) / total_unique_words * 100
+neg_percentage <- sum(neg_wordCounts) / total_unique_words * 100
+
+print(paste("Percentage of Positive Words: ", round(pos_percentage, 2), "%"))
+print(paste("Percentage of Negative Words: ", round(neg_percentage, 2), "%"))
+
+freq_pos_words <- pos_wordCounts[pos_wordCounts >= 20]
+freq_neg_words <- neg_wordCounts[neg_wordCounts >= 20]
+
+par(mfrow = c(2, 1))
+
+barplot(freq_pos_words, main = "Most Frequent Positive Words (>= 20 times)",
+        xlab = "Positive Words", ylab = "Frequency")
+
+barplot(freq_neg_words, main = "Most Frequent Negative Words (>= 20 times)",
+        xlab = "Negative Words", ylab = "Frequency")
 ```
 
 Let's get the number of articles published in each year and month. Note that the chunk below creates two new variables `count` and `yearmonth`:
 
 ```{r}
 news <- news %>% group_by(year,month) %>% mutate(count=n(), yearmonth = paste(year, month,sep = '/')) %>% arrange(year,month,day)
+print(news)
 ```
 
 # Question 9
 Using `ggplot2`, create a barplot for the frequency of articles released in each year and month. On the x axis, you should have year month, e.g., 2003/10, 2003/11, 2003/12, 2004/1, on the y-axis you should have the number of articles released in the data. Do you see a change in the number of articles released across years? (Hint: use `factor()` with `levels=` options specified when you call `aes(x=)` to have a proper chronological sorting on your x axis. Use `+theme(axis.text=element_text(size=4,angle=90)` to fit the dates on the x axis.)
 
 ```{r}
+library(ggplot2)
+
+ggplot(news, aes(x = factor(yearmonth, levels = unique(yearmonth)), y = count)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(title = "Frequency of Articles Released by Year and Month",
+       x = "Year Month", y = "Number of Articles Released") +
+  theme(axis.text.x = element_text(size = 4, angle = 90)) 
+
 ```
 
 Let's now practice working with `quanteda` and `corpus` packages. Install the packages first if you don't have them in your computer and load them in in R.
