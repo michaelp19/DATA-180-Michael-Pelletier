@@ -202,17 +202,69 @@ Using the `term_stats()` function, return the 20 most frequent single words that
 * stopwords
 
 ```{r}
+library(tm)
+
+custom_preprocess <- function(x) {
+  x <- tolower(x)
+  x <- removePunctuation(x)
+  x <- removeNumbers(x)
+  x <- removeWords(x, stopwords("en"))
+  x <- stripWhitespace(x)
+  return(x)
+}
+
+clean_corpus <- Corpus(VectorSource(wordCorpus))
+clean_corpus <- tm_map(clean_corpus, content_transformer(custom_preprocess))
+
+dtm <- DocumentTermMatrix(clean_corpus)
+
+mat <- as.matrix(dtm)
+
+term_frequencies <- colSums(mat)
+
+filtered_terms <- term_frequencies[!(names(term_frequencies) %in% stopwords("en"))]
+
+top20_terms <- head(sort(filtered_terms, decreasing = TRUE), 20)
+
+print(top20_terms)
 
 ```
 
 # Question 11
 Repeat the previous question for word pairs (frequency of 2 words that show up, instead of 1 word)
 ```{r}
+library(tm)
+
+custom_preprocess <- function(x) {
+  x <- tolower(x)
+  x <- removePunctuation(x)
+  x <- removeNumbers(x)
+  x <- removeWords(x, stopwords("en"))
+  x <- stripWhitespace(x)
+  return(x)
+}
+
+clean_corpus <- Corpus(VectorSource(wordCorpus))
+clean_corpus <- tm_map(clean_corpus, content_transformer(custom_preprocess))
+
+dtm <- DocumentTermMatrix(clean_corpus)
+
+term_frequencies <- row_sums(as.matrix(dtm))
+
+word_pairs <- colnames(dtm)[term_frequencies > 0]
+
+word_pairs <- word_pairs[!grepl("[[:punct:]]", word_pairs)]
+word_pairs <- word_pairs[!grepl("[[:digit:]]", word_pairs)]
+
+top20_word_pairs <- head(sort(word_pairs, decreasing = TRUE), 20)
+
+print(top20_word_pairs)
 ```
 
 # Question 12
 Create a corpus object using `corpus()` function. Store it in an object named `newscorpus`. Convert `newscorpus` into paragraphs with `corpus_reshape()`.
 ```{r}
+
 ```
 
 # Question 13
