@@ -31,7 +31,7 @@ In this homework, we will analyze news headlines data scraped from abcnews, post
 Read the `news.csv` into R and create the object `news` using
 
 ```{r}
-#library(tidyverse)
+library(tidyverse)
 library(tm)
 news<-read.csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/hw7/news.csv",header=T)
 ```
@@ -233,8 +233,6 @@ print(top20_terms)
 # Question 11
 Repeat the previous question for word pairs (frequency of 2 words that show up, instead of 1 word)
 ```{r}
-library(tm)
-
 custom_preprocess <- function(x) {
   x <- tolower(x)
   x <- removePunctuation(x)
@@ -247,35 +245,63 @@ custom_preprocess <- function(x) {
 clean_corpus <- Corpus(VectorSource(wordCorpus))
 clean_corpus <- tm_map(clean_corpus, content_transformer(custom_preprocess))
 
-dtm <- DocumentTermMatrix(clean_corpus)
+dtm_single <- DocumentTermMatrix(clean_corpus)
 
-term_frequencies <- row_sums(as.matrix(dtm))
+term_frequencies_single <- colSums(as.matrix(dtm_single))
 
-word_pairs <- colnames(dtm)[term_frequencies > 0]
+filtered_terms_single <- term_frequencies_single[!(names(term_frequencies_single) %in% stopwords("en"))]
 
-word_pairs <- word_pairs[!grepl("[[:punct:]]", word_pairs)]
-word_pairs <- word_pairs[!grepl("[[:digit:]]", word_pairs)]
+top20_terms_single <- head(sort(filtered_terms_single, decreasing = TRUE), 20)
 
-top20_word_pairs <- head(sort(word_pairs, decreasing = TRUE), 20)
+dtm_word_pairs <- DocumentTermMatrix(clean_corpus, control = list(tokenize = function(x) ngram(words(x), n = 2)))
 
-print(top20_word_pairs)
+term_frequencies_word_pairs <- colSums(as.matrix(dtm_word_pairs))
+
+filtered_terms_word_pairs <- term_frequencies_word_pairs[!(names(term_frequencies_word_pairs) %in% stopwords("en"))]
+
+top20_terms_word_pairs <- head(sort(filtered_terms_word_pairs, decreasing = TRUE), 20)
+
+print("Top 20 Word Pairs:")
+print(top20_terms_word_pairs)
+
 ```
 
 # Question 12
 Create a corpus object using `corpus()` function. Store it in an object named `newscorpus`. Convert `newscorpus` into paragraphs with `corpus_reshape()`.
 ```{r}
+newscorpus <- corpus(charVector)
+newscorpus <- corpus_reshape(newscorpus, to = "paragraphs")
+newscorpus
 
 ```
 
 # Question 13
 Create a term document matrix named `news_dtm` by using the `dfm()` function. While you call `dfm()`, make sure to clean the paragraphs by keeping only the stems of the words, removing punctuations, removing symbols, removing numbers, and removing stopwords. If you wish to get rid of anything that does not look correct in the data (such as weird bunch of characters that show up as "words") you may trim them out at this stage using `dfm_remove()`. Finally, trim `news_dtm` such that it contains only words that show up at least 50 times. Print the first 6 rows of `news_dtm`. (Note: Again, ignore warnings.)
 ```{r}
+news_dtm <- dfm(
+  newscorpus,
+  tolower = TRUE,
+  remove_punct = TRUE,
+  remove_symbols = TRUE,
+  remove_numbers = TRUE,
+  remove = stopwords("en"),
+  stem = TRUE
+)
+
+news_dtm <- dfm_trim(news_dtm, min_termfreq = 50)
+
+print(news_dtm[1:6, ])
+
 ```
 
 # Question 14
 Create a wordcloud of `news_dtm` using `textplot_wordcloud()`. Comment on words that you were surprised and not surprised to see in the news headlines dataset.
 ```{r}
 library("quanteda.textplots")
+
+textplot_wordcloud(news_dtm, min_count = 10, color = "blue")
+
+# I was not surprised to see police, court, fire, govt, win, and kill because all of those words are crisises which the news often reports on. I was surprised to see job, house, car, school but at the same time it makes sense that those words would be in the top 50. 
 
 ```
 
@@ -291,6 +317,12 @@ library('tidytext')
 Run the LDA algorithm using k = 8. Store your output in object named `topic_model`. Print the 10 most frequent words that occurred in each 8 topic.
 
 ```{r}
+
+
+
+
+
+
 
 ```
 
