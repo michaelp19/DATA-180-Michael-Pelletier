@@ -259,7 +259,7 @@ term_frequencies_word_pairs <- colSums(as.matrix(dtm_word_pairs))
 
 filtered_terms_word_pairs <- term_frequencies_word_pairs[!(names(term_frequencies_word_pairs) %in% stopwords("en"))]
 
-top20_terms_word_pairs <- head(sort(filtered_terms_word_pairs, decreasing = TRUE), 20)
+top20_terms_word_pairs <- head(sort(filtered_terms_word_pairs, decreasing = TRUE), 40)
 
 print("Top 20 Word Pairs:")
 print(top20_terms_word_pairs)
@@ -317,13 +317,9 @@ library('tidytext')
 Run the LDA algorithm using k = 8. Store your output in object named `topic_model`. Print the 10 most frequent words that occurred in each 8 topic.
 
 ```{r}
-
-
-
-
-
-
-
+news_topics <- convert(news_dtm, to = "topicmodels")
+topic_model <- LDA(news_topics, k = 8)
+terms(topic_model, 10)
 ```
 
 
@@ -331,12 +327,52 @@ Run the LDA algorithm using k = 8. Store your output in object named `topic_mode
 Plot betas of top 10 words with highest beta for each 8 topic. Comment on 3-4 news headline groups in terms of their topic content.
 ```{r}
 
+# Extract top 10 words for each topic
+top_words <- terms(topic_model, 10)
+
+# Tidy the topic model
+tidy_topics <- tidy(topic_model, matrix = "beta")
+
+# Select the top 10 words for each topic
+news_top_topics <- tidy_topics %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 10) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+# Plot betas of top 10 words for each topic
+news_top_topics %>%
+  mutate(term = forcats::fct_inorder(term)) %>%
+  group_by(topic) %>%
+  mutate(term = reorder_within(term, beta, row_number())) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+
+# I'm getting a Error:Error in loadNamespace(x) : there is no package called ‘reshape2’. I don't know how I'm using 'reshape2' in my code. 
 ```
 
 # Question 16
 Plot gammas of top 5 documents with highest gamma for each 8 topic. Return the contents of the 5 documents with highest gamma only for topics 1 and 2. Does it makes sense that these documents are assigned to topics 1 and 2 accordingly? Comment.
 ```{r}
+tidy_news <- tidy(topic_model, matrix = "gamma")
 
+# Select the top 10 documents for each topic
+top_news <- tidy_news %>%
+  group_by(topic) %>%
+  slice_max(gamma, n = 10) %>%
+  ungroup() %>%
+  arrange(topic, -gamma)
+
+# Plot gammas of top 10 documents for each topic
+top_news %>%
+  mutate(document = reorder_within(document, gamma, topic)) %>%
+  ggplot(aes(gamma, document, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+# I'm getting a Error:Error in loadNamespace(x) : there is no package called ‘reshape2’. I don't know how I'm using 'reshape2' in my code. I'd be happy to meet and get help on these last two problems. 
 ```
 
 
