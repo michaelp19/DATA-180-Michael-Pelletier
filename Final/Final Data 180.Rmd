@@ -154,18 +154,18 @@ your_dataset
 3.	Data Visualization:
 For every graph in this section, remember to label your axes and to include a title. Feel free to play around with graphics and parameters. Have fun and explore!
 a.	Plot a bar graph for the “Def_Ind” column and describe it. 
+```{r}
+```
 b.	Plot a bar graph for the “rep_education" column and describe it. 
+```{r}
+```
 c.	Plot a histogram of the “rep_income” variable.
+```{r}
+```
 d.	Plot a boxplot of the “tot_balance” variable. Using the box plot report the five number summary of the variable? Are there any outliers for this variable? 
-
-
 ```{r}
-summary(cars)
 ```
 
 
 
-```{r}
-plot(pressure)
-```
 
