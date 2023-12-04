@@ -13,18 +13,101 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+#FALL 2023
 
-```{r cars}
+#Due December 15th at 11:59 pm EST.
+This is a programming only assignment. Answer questions in both code and writing. 
+For this exam we will be working with a real-world data set for data visualization, data wrangling, and creating summary statistics. You are expected to use base R or any modules we have covered in class to answer the questions in both code and writing. You can use either R script or a Markdown file to complete the assignment but make sure your code runs before you submit your assignment. 
+Here is a description of the data: Financial institutions that lend to consumers rely on models to help decide on who to approve or decline for credit (for lending products such as credit cards, automobile loans, or home loans). In this task, you are to use the skills we have learnt in class to understand this data. You are given historical data containing one response (binary) and 20 predictor variables from credit card accounts for a hypothetical bank XYZ.
+Use the data set found here on the course website to answer the following questions. You can find a code book of the data here . 
+
+1.	Data wrangling:
+a.	What is the dimension (shape) of the dataset?  How many rows and columns does the data set have?
+```{r}
+dataset<-read.csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/Final/loan_default_data_set.csv",header=T)
+
+dataset_dimensions <- dim(dataset)
+
+
+print(dataset_dimensions)
+
+
+# 21 columns and 20,000 rows
+
+```
+b.	Report the column names of the data set.
+```{r}
+column_names <- colnames(dataset)
+
+print(column_names)
+
+```
+
+c.	Which types of data are there in the dataset? Numeric, categorical, ordinal?
+#Numerical data:tot_balance, avg_bal_cards, credit_age, credit_age_good_account, credit_card_age, num_acc_30d_past_due_12_months, num_acc_30d_past_due_6_months, num_mortgage_currently_past_due, tot_amount_currently_past_due, num_inq_12_month, num_card_inq_24_month, num_card_12_month, num_auto_.36_month, uti_open_card, pct_over_50_uti, uti_max_credit_line, pct_card_over_50_uti, rep_income
+
+#Categorical data:ind_XYZ (assuming it represents a categorical variable with levels like "Yes" or "No")
+
+#Ordinal data: rep_education (depending on the nature of education levels, it could be ordinal)
+
+#Target/Label: Def_ind (assuming it represents a binary outcome like "Default" or "No Default")
+
+# There is more numerical data than categorical and ordinal. This makes sense since this data is coming from a bank. 
+d.	Which columns contain missing values and how much (what percent) of those columns are missing?
+```{r}
+missing_values <- colMeans(is.na(dataset)) * 100
+
+columns_with_missing <- names(missing_values[missing_values > 0])
+
+print(data.frame(
+  Column = columns_with_missing,
+  Percentage_Missing = missing_values[columns_with_missing]
+))
+
+
+```
+e.	How do you think we should deal with missing values? 
+```{r}
+column_names <- colnames(dataset)
+
+print(column_names)
+
+```
+f.	With this data, would you fit a supervised or an unsupervised learning model? Why? 
+
+g.	For part 2 and 3 drop all rows of the data that contain missing values. Print the dimensions of the resulting data set that has no missing values.
+```{r}
+column_names <- colnames(dataset)
+
+print(column_names)
+
+```
+
+
+
+2.	Data summary statistics:
+a.	Find the summary statistics of the data set. You can use the summary function from dplyr. 
+b.	Based on the mean, mode, and median, is “num_card_inq_24_month” bell shaped, left, right skewed? How about “tot_amount_currently_past_due”? “credit_age”? 
+c.	Plot a histogram of the variables in b above. Do the shapes of the histograms confirm the skewness you found in b?
+d.	How would your convert the “rep_education” column into numerical data? Name two ways. 
+
+
+
+3.	Data Visualization:
+For every graph in this section, remember to label your axes and to include a title. Feel free to play around with graphics and parameters. Have fun and explore!
+a.	Plot a bar graph for the “Def_Ind” column and describe it. 
+b.	Plot a bar graph for the “rep_education" column and describe it. 
+c.	Plot a histogram of the “rep_income” variable.
+d.	Plot a boxplot of the “tot_balance” variable. Using the box plot report the five number summary of the variable? Are there any outliers for this variable? 
+
+
+```{r}
 summary(cars)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
+```{r}
 plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
