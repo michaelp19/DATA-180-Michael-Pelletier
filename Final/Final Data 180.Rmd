@@ -124,7 +124,7 @@ ggplot(cleaned_dataset, aes(x = credit_age)) +
 
 ```
 d.	How would your convert the “rep_education” column into numerical data? Name two ways. 
-#Label encoding(Assign a unique numerical value to each category in the "rep_education" column. This is useful when there is an ordinal relationship among categories).
+#Label encoding(Assign a unique numerical value to each category in the "rep_education" column. This is useful when there is an ordinal relationship among categories) or One-Hot Encoding(Create binary columns for each category in "rep_education" where each column represents the presence or absence of a specific category). I choose to do label encoding because I have experience doing it this way. 
 ```{r}
 library(dplyr)
 
@@ -136,34 +136,67 @@ your_dataset <- cleaned_dataset %>%
 your_dataset
 
 ```
-#One-Hot Encoding(Create binary columns for each category in "rep_education" where each column represents the presence or absence of a specific category).
-```{r}
-# Not done yet
-library(dplyr)
 
-your_dataset <- cleaned_dataset %>%
-  mutate(across(rep_education, ~as.numeric(. == levels(factor(rep_education)))))
-
-colnames(your_dataset)[grep("rep_education_", colnames(your_dataset))] <- levels(factor(your_dataset$rep_education))
-
-your_dataset
-
-
-```
 
 3.	Data Visualization:
 For every graph in this section, remember to label your axes and to include a title. Feel free to play around with graphics and parameters. Have fun and explore!
 a.	Plot a bar graph for the “Def_Ind” column and describe it. 
 ```{r}
+library(ggplot2)
+
+ggplot(cleaned_dataset, aes(x = factor('Def_ind'))) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Distribution of Defense Indicator",
+       x = "Defense Indicator",
+       y = "People") +
+  theme_minimal()
+# If "def_ind" stands for "defense indicator," it might be related to fraud detection or security measures. Again, a value of 0 could signify no issue or no defensive action needed, while a value of 1 might indicate a flagged transaction that required some form of defensive action. This means that the the y axis is the number of people that have been flagged on a transaction and it required a form of defensive action. 
 ```
 b.	Plot a bar graph for the “rep_education" column and describe it. 
 ```{r}
+your_dataset$rep_education <- factor(your_dataset$rep_education_numeric, levels = c(1, 2, 3),
+                                   labels = c("High School", "College", "Graduate Degree"))
+
+# Plot a bar graph
+ggplot(your_dataset, aes(x = rep_education)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Education Level Distribution",
+       x = "Education Level",
+       y = "People") +
+  theme_minimal()
+
+
 ```
 c.	Plot a histogram of the “rep_income” variable.
 ```{r}
+ggplot(your_dataset, aes(x = rep_income)) +
+  geom_histogram(binwidth = 5000, fill = "skyblue", color = "black") +
+  labs(title = "Income Distribution",
+       x = "Income",
+       y = "Count") +   theme_minimal()
+
+
+
+
 ```
 d.	Plot a boxplot of the “tot_balance” variable. Using the box plot report the five number summary of the variable? Are there any outliers for this variable? 
 ```{r}
+ggplot(your_dataset, aes(y = tot_balance)) +
+  geom_boxplot(fill = "lightcoral", color = "black") +
+  labs(title = "Boxplot of Total Balance",
+       y = "Total Balance") +
+  theme_minimal()
+
+summary(your_dataset$tot_balance)
+
+outliers <- boxplot(your_dataset$tot_balance, plot = FALSE)$out
+if (length(outliers) > 0) {
+  cat("Outliers:", outliers, "\n")
+} else {
+  cat("No outliers found.\n")
+}
+
+#There are outliers:37213.81, 176118.3, 175548.2, 174991.2, 45908.84, 172021.5, 188251, 177612.9, 30917.23, 31931.05, 41069.3, 31215.3, 43069.16, 33995.84, 44202.58, 44532.17, 174821.7, 39126.32, 37189.69, 45624.69,  36256.21, 30780.03, 176207, 45371.69, 179531.1, 45126.65, 172831.9, 37431.07, 43972.68, 41012.27, 176225.8, 172820.9, 37724.46, 173917.2, 41043.34, 170626.7, 43349.1, 175988.7, 182871.6, 44179.22, 41462.38, 44474.37, 175710.4 169497.9, 44099.11, 38838.7, 172062.1, 45218.49, 45238.39, 173751.8, 171941.5, 2e+05, 170562.1, 169207.1, 22812.25 42402.89 45528.07, 171547.4, 43154.35, 45639, 45068.05, 175989.7, 183558.7, 174756.9, 29795.5, 186386.2, 174318.3 172251.3 194486 173533.1, 33319.34, 39744.14, 45505.23, 36839.24, 174664.6, 36874.44, 170056.6, 169129.4, 25018.42 169498 45355.74 32057.66, 172878, 172258.7, 45905.18, 43076.09, 40345.16, 
 ```
 
 
