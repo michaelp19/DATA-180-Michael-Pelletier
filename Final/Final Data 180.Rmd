@@ -144,9 +144,11 @@ a.	Plot a bar graph for the “Def_Ind” column and describe it.
 ```{r}
 library(ggplot2)
 
-ggplot(cleaned_dataset, aes(x = factor('Def_ind'))) +
+def_ind_col <- cleaned_dataset$Def_ind
+
+ggplot(cleaned_dataset, aes(x = factor(def_ind_col))) +
   geom_bar(fill = "skyblue", color = "black") +
-  labs(title = "Distribution of Defense Indicator",
+  labs(title = "Bar Graph for defense indicator",
        x = "Defense Indicator",
        y = "People") +
   theme_minimal()
