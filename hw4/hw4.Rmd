@@ -94,10 +94,10 @@ cat("The track with the fastest average record time is:", fastest_track$track)
 Let's get the year from the `date` column and save it as a variable named `year`. You can use the function `substr(date, 1, 4)` which grabs the first 4 digits in the `date` column. Use this expression in `mutate()` to create a `year` column. (Don't forget to save/overwrite the dataframe returned to the original one!)
 
 ```{r}
-years <- records %>%
+year <- records %>%
   mutate(year = as.integer(substr(date, 1, 4)))
 
-head(years)
+head(year)
 
 ```
 
@@ -105,30 +105,27 @@ head(years)
 Now get the average record time (`time`) by year.
 
 ```{r}
-# average_time_by_year <- records %>%
-#   group_by(year) %>%
-#   summarize(avg_time = mean(time))%>% 
-# 
-# print(average_time_by_year)
+average_by_year <- records %>%
+mutate(year = as.integer(substr(date,1,4))) %>%
+  group_by(year) %>%
+  summarize(Avg_Record_Time = mean(time,na.rm = TRUE))
 
-# Code breaking. (-2)
-# records %>% group_by(year) %>% summarize(mean=mean(time)) 
+average_by_year
 ```
 # Question 7
 Continuing with your results in Question 6: Do you notice a trend across years? Are the record times getting faster, slower, or no clear pattern in time? Create a barplot where each year appears on the x axis (you can treat year as a categorical variable in this case) and y axis showing the mean record time in each year. Interpret your graph. *Hint: Use your code in Question 6, which returns the average record times by year, followed by ` %>% ggplot(aes(year,mean)) + geom_bar(stat='identity')` Hint2: To make your figure wider, you can insert fig.width=10 inside the curly brackets at the beginning of your r code chunk below, as {r, fig.width=10} which I already did for you below,*
 
 ```{r, fig.width=10}
+library(dplyr)
 library(ggplot2)
-average_time_by_year <- records %>%
-  group_by(year) %>%
-  summarize(avg_time = mean(time))
 
-ggplot(average_time_by_year, aes(year, avg_time)) +
-  geom_bar(stat = 'identity')
-# Code breaking here as well.
-#records %>% group_by(year) %>% summarize(mean=mean(time)) %>% ggplot(aes(year,mean)) + geom_bar(stat='identity')
+ggplot(average_by_year,aes(year, Avg_Record_Time )) + 
+  geom_bar(stat = 'identity') +
+  labs(x = 'Year', y = 'Mean Record Time') +
+  ggtitle("Trend in Mean Record Time by Year")
 
 #Do you notice a trend across years? Are the record times getting faster, slower, or no clear pattern in time?
+#I don't see a trend across the years. There is no clear pattern in the time and the year. 2007 sticks out to me but apparently someone did set a very quick record time in 2007.
 
 ```
 
@@ -196,7 +193,7 @@ mean_time_by_system <- records %>%
 
 
 print(mean_time_by_system)
-# Do you observe a difference across the two game systems?
+#I observe a difference in the mean time between the NTSC and the PAL. The NTSC is clearly smaller in mean time than the PAL. The reason for this is because the NTSC version runs at 60 FPS which is greater than 50 FPS. That is why the mean time for the NTSC is lower.
 ```
 
 You are done! 🏁 Don't forget to commit and push your .Rmd file to your Github repository before the due date. (Well... the checkered flag emoji is now super relevant for this assignment!)
