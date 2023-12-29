@@ -4,7 +4,7 @@ author: "Michael Pelletier"
 date: "2023-12-04"
 output: html_document
 ---
-
+40/40. Good job. 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -24,7 +24,7 @@ Use the data set found here on the course website to answer the following questi
 1.	Data wrangling:
 a.	What is the dimension (shape) of the dataset?  How many rows and columns does the data set have?
 ```{r}
-dataset<-read.csv("/Users/michaelpelletier/Desktop/Data 180-Michael Pelletier version2 /DATA-180-Michael-Pelletier/Final/loan_default_data_set.csv",header=T)
+dataset<-read.csv("loan_default_data_set.csv",header=T)
 
 dataset_dimensions <- dim(dataset)
 
