@@ -1,0 +1,229 @@
+---
+title: "Final Data 180"
+author: "Michael Pelletier"
+date: "2023-12-04"
+output: html_document
+---
+40/40. Good job. 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+#FALL 2023
+
+#Due December 15th at 11:59 pm EST.
+This is a programming only assignment. Answer questions in both code and writing. 
+For this exam we will be working with a real-world data set for data visualization, data wrangling, and creating summary statistics. You are expected to use base R or any modules we have covered in class to answer the questions in both code and writing. You can use either R script or a Markdown file to complete the assignment but make sure your code runs before you submit your assignment. 
+Here is a description of the data: Financial institutions that lend to consumers rely on models to help decide on who to approve or decline for credit (for lending products such as credit cards, automobile loans, or home loans). In this task, you are to use the skills we have learnt in class to understand this data. You are given historical data containing one response (binary) and 20 predictor variables from credit card accounts for a hypothetical bank XYZ.
+Use the data set found here on the course website to answer the following questions. You can find a code book of the data here . 
+
+1.	Data wrangling:
+a.	What is the dimension (shape) of the dataset?  How many rows and columns does the data set have?
+```{r}
+dataset<-read.csv("loan_default_data_set.csv",header=T)
+
+dataset_dimensions <- dim(dataset)
+
+
+print(dataset_dimensions)
+
+
+# 21 columns and 20,000 rows
+
+```
+b.	Report the column names of the data set.
+```{r}
+column_names <- colnames(dataset)
+
+print(column_names)
+
+```
+
+c.	Which types of data are there in the dataset? Numeric, categorical, ordinal?
+#Numerical data:tot_balance, avg_bal_cards, credit_age, credit_age_good_account, credit_card_age, num_acc_30d_past_due_12_months, num_acc_30d_past_due_6_months, num_mortgage_currently_past_due, tot_amount_currently_past_due, num_inq_12_month, num_card_inq_24_month, num_card_12_month, num_auto_.36_month, uti_open_card, pct_over_50_uti, uti_max_credit_line, pct_card_over_50_uti, rep_income
+
+#Categorical data:Def_ind and ind_XYZ (assuming it represents a categorical variable with levels like "Yes" or "No"). Since people only have a 1 or a 0 in both of these columns, both forms of data are categorical, since it puts people into groups of either 0 and 1. 
+
+#Ordinal data: rep_education since it categorizes people by what level of education they have obtained. 
+
+# There is more numerical data than categorical and ordinal. This makes sense since this data is coming from a bank. 
+d.	Which columns contain missing values and how much (what percent) of those columns are missing?
+```{r}
+missing_values <- colMeans(is.na(dataset)) * 100
+
+columns_with_missing <- names(missing_values[missing_values > 0])
+
+print(data.frame(
+  Column = columns_with_missing,
+  Percentage_Missing = missing_values[columns_with_missing]
+))
+
+
+```
+e.	How do you think we should deal with missing values? 
+#It depends on how we want to analyze the data. Since the missing values are 'rep_income' and 'pct_card_over_50_uti', for the percentage of cards over 50 which are utilized, there is about 10% of the data missing which makes sense because people lose credit cards occassionally. There is about 8% of data missing from 'rep_income', some people might have forgotten to report their income or may have been laid off from work and are embarrased to report their income. There are many different reasons for the data missing. I think we should drop all rows of the data that contain missing values.
+f.	With this data, would you fit a supervised or an unsupervised learning model? Why? 
+#I would use a supervised learning model because financial institutions that lend to consumers rely on models to help decide on who to approve or decline for credit (for lending products such as credit cards, automobile loans, or home loans). This means that supervised learning model makes more sense because we have a specific outcome we want to predict or classify, and we have labeled data for training and testing. 
+g.	For part 2 and 3 drop all rows of the data that contain missing values. Print the dimensions of the resulting data set that has no missing values.
+```{r}
+cleaned_dataset <- na.omit(dataset)
+
+print(dim(cleaned_dataset))
+
+#Now there are still 21 rows but only 16,653 columns.
+
+```
+
+
+
+2.	Data summary statistics:
+a.	Find the summary statistics of the data set. You can use the summary function from dplyr. 
+```{r}
+library(dplyr)
+summary_stats <- dataset %>%
+  summary()
+
+print(summary_stats)
+
+
+```
+b.	Based on the mean, mode, and median, is “num_card_inq_24_month” bell shaped, left, right skewed? How about “tot_amount_currently_past_due”? “credit_age”? 
+#num_card_inq_24_month:
+#Mean > Median (50th percentile)
+#The distribution is right-skewed.
+
+#tot_amount_currently_past_due:
+#Mean > Median (50th percentile)
+#The distribution is right-skewed.
+
+#credit_age:
+#Mean ~ Median (50th percentile)
+#The distribution is approximately symmetrical or bell-shaped.
+c.	Plot a histogram of the variables in b above. Do the shapes of the histograms confirm the skewness you found in b?
+```{r}
+library(ggplot2)
+library(dplyr)
+
+ggplot(cleaned_dataset, aes(x = num_card_inq_24_month)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(title = "Histogram of num_card_inq_24_month", x = "num_card_inq_24_month", y = "Frequency")
+
+ggplot(cleaned_dataset, aes(x = tot_amount_currently_past_due)) +
+  geom_histogram(binwidth = 500, fill = "green", color = "black") +
+  labs(title = "Histogram of tot_amount_currently_past_due", x = "tot_amount_currently_past_due", y = "Frequency")
+
+ggplot(cleaned_dataset, aes(x = credit_age)) +
+  geom_histogram(binwidth = 10, fill = "orange", color = "black") +
+  labs(title = "Histogram of credit_age", x = "credit_age", y = "Frequency")
+
+#The shapes of the histograms confirm the skewness that I found in part b.
+
+```
+d.	How would your convert the “rep_education” column into numerical data? Name two ways. 
+#Label encoding(Assign a unique numerical value to each category in the "rep_education" column. This is useful when there is an ordinal relationship among categories) or One-Hot Encoding(Create binary columns for each category in "rep_education" where each column represents the presence or absence of a specific category). I choose to do label encoding because I have experience doing it this way. 
+```{r}
+library(dplyr)
+
+education_mapping <- c("high_school" = 1, "college" = 2, "graduate" = 3)
+
+your_dataset <- cleaned_dataset %>%
+  mutate(rep_education_numeric = as.numeric(factor(rep_education, levels = names(education_mapping), labels = education_mapping)))
+
+your_dataset
+
+```
+
+
+3.	Data Visualization:
+For every graph in this section, remember to label your axes and to include a title. Feel free to play around with graphics and parameters. Have fun and explore!
+a.	Plot a bar graph for the “Def_Ind” column and describe it. 
+```{r}
+library(ggplot2)
+
+def_ind_col <- cleaned_dataset$Def_ind
+
+ggplot(cleaned_dataset, aes(x = factor(def_ind_col))) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Bar Graph for defense indicator",
+       x = "Defense Indicator",
+       y = "People") +
+  theme_minimal()
+# If "def_ind" stands for "defense indicator," it might be related to fraud detection or security measures. Again, a value of 0 could signify no issue or no defensive action needed, while a value of 1 might indicate a flagged transaction that required some form of defensive action. This means that the the y axis is the number of people that have been flagged on a transaction and it required a form of defensive action. 
+```
+b.	Plot a bar graph for the “rep_education" column and describe it. 
+```{r}
+your_dataset$rep_education <- factor(your_dataset$rep_education_numeric, levels = c(1, 2, 3),
+                                   labels = c("High School", "College", "Graduate Degree"))
+
+# Plot a bar graph
+ggplot(your_dataset, aes(x = rep_education)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(title = "Education Level Distribution",
+       x = "Education Level",
+       y = "People") +
+  theme_minimal()
+
+
+```
+c.	Plot a histogram of the “rep_income” variable.
+```{r}
+library(ggplot2)
+
+# Assuming your_dataset is your data frame and rep_income is the column of interest
+ggplot(your_dataset, aes(x = rep_income)) +
+  geom_histogram(fill = "steelblue", color = "black", bins = 20, alpha = 0.7) +
+  labs(title = "Histogram of Rep Income",
+       x = "Rep Income",
+       y = "Frequency") +
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        axis.line = element_line(color = "black"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        plot.title = element_text(size = 16, face = "bold"),
+        legend.position = "none") +
+  scale_x_continuous(breaks = c(0, 50000, 100000, 150000, 200000,250000,300000))  # Adjust the values as needed
+
+# Adjust other elements based on your preferences
+```
+d.	Plot a boxplot of the “tot_balance” variable. Using the box plot report the five number summary of the variable? Are there any outliers for this variable? 
+```{r}
+library(ggplot2)
+
+# Assuming your_dataset is your data frame and tot_balance is the column of interest
+ggplot(your_dataset, aes(y = tot_balance)) +
+  geom_boxplot(fill = "green", color = "black", outlier.colour = "red", outlier.shape = 16, outlier.size = 3) +
+  labs(title = "Boxplot of Tot Balance",
+       y = "Total Balance") +
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.background = element_rect(fill = "white"),
+        axis.line = element_line(color = "black"),
+        axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14, face = "bold"),
+        plot.title = element_text(size = 16, face = "bold"))
+
+# Calculate and print the five-number summary
+summary(your_dataset$tot_balance)
+
+# Identify and print outliers
+outliers <- boxplot(your_dataset$tot_balance, plot = FALSE)$out
+if(length(outliers) > 0) {
+  cat("Outliers:", outliers, "\n")
+} else {
+  cat("No outliers.\n")
+}
+
+#There are outliers:37213.81, 176118.3, 175548.2, 174991.2, 45908.84, 172021.5, 188251, 177612.9, 30917.23, 31931.05, 41069.3, 31215.3, 43069.16, 33995.84, 44202.58, 44532.17, 174821.7, 39126.32, 37189.69, 45624.69,  36256.21, 30780.03, 176207, 45371.69, 179531.1, 45126.65, 172831.9, 37431.07, 43972.68, 41012.27, 176225.8, 172820.9, 37724.46, 173917.2, 41043.34, 170626.7, 43349.1, 175988.7, 182871.6, 44179.22, 41462.38, 44474.37, 175710.4 169497.9, 44099.11, 38838.7, 172062.1, 45218.49, 45238.39, 173751.8, 171941.5, 2e+05, 170562.1, 169207.1, 22812.25 42402.89 45528.07, 171547.4, 43154.35, 45639, 45068.05, 175989.7, 183558.7, 174756.9, 29795.5, 186386.2, 174318.3 172251.3 194486 173533.1, 33319.34, 39744.14, 45505.23, 36839.24, 174664.6, 36874.44, 170056.6, 169129.4, 25018.42 169498 45355.74 32057.66, 172878, 172258.7, 45905.18, 43076.09, 40345.16, 
+```
+
+
+
+
